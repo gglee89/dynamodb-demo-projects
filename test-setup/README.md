@@ -71,3 +71,6 @@ WE do see some estimated cost per month. However, as long as we are using **unde
 # Encryption at Rest
 We will look at this option, later in the course
 
+# Operations
+- Since `scan` performs searches across the table partitions, they can use up the read capacity unit very, very fast. 
+- This is the reason we should avoid using `scan` operations as MUCH as possible and prefer query operations.
