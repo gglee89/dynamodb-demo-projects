@@ -11,6 +11,8 @@
   "dependencies": {
     "async": "^3.2.2",
     "aws-sdk": "^2.1043.0",
+    "faker": "^5.5.3",
+    "moment": "^2.29.1",
     "underscore": "^1.13.1"
   }
 }
