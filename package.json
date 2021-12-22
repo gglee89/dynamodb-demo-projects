@@ -1,18 +1,24 @@
 {
   "name": "dynamodb-demo-projects",
   "version": "1.0.0",
-  "description": "Source: Udemy AWS DynamoDB - The Complete Guide (Build 18+ Hands On Demos)",
+  "description": "Notes taking SPA demo",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "async": "^3.2.2",
-    "aws-sdk": "^2.1043.0",
+    "aws-sdk": "^2.1046.0",
+    "body-parser": "^1.19.1",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
     "faker": "^5.5.3",
+    "hbs": "^4.2.0",
     "moment": "^2.29.1",
-    "underscore": "^1.13.1"
+    "underscore": "^1.13.2",
+    "uuid": "^8.3.2"
   }
 }
