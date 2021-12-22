@@ -10,8 +10,10 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-app.use(cors());
 app.use(compression());
+app.use(cors({
+    origin: "*"
+}));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(appRoutes);
