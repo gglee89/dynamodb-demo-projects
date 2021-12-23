@@ -6,7 +6,7 @@
 const http = require('http');
 const debug = require('debug')('node-rest:server');
 
-const app = require('../app/app');
+const app = require('../src/app');
 
 /**
  * Get port from environment and store in Express.
