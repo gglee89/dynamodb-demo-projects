@@ -1,7 +1,9 @@
 import { Router, Request, Response } from 'express'
 
 export interface RequestWithBody extends Request {
-    body: { [key: string]: string | undefined }
+    body: { [key: string]: string | object | undefined },
+    query: { [key: string]: string },
+    docClient?: any
 }
 
 const router = Router()
