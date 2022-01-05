@@ -13,6 +13,7 @@ dotenv_1.default.config();
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use((0, cookie_session_1.default)({ keys: ['lasdfk'] }));
 app.use(login_routes_1.router);
-app.listen(3000, () => {
-    console.log('listening on port 3000');
+app.listen(5001, () => {
+    console.log('listening on port 5001');
 });
+//# sourceMappingURL=index.js.map

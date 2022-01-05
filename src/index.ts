@@ -11,6 +11,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieSession({ keys: ['lasdfk'] }))
 app.use(router)
 
-app.listen(3000, () => {
-    console.log('listening on port 3000')
+app.listen(5001, () => {
+    console.log('listening on port 5001')
 })
