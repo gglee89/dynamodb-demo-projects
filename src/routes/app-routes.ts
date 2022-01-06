@@ -1,10 +1,11 @@
-import { NextFunction, Router, Request, Response } from 'express';
+import { NextFunction, Router, Response } from 'express';
 import request from 'request';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import { v4 } from 'uuid';
 import _ from 'underscore';
 import moment from 'moment';
 import AWS, { AWSError } from 'aws-sdk';
+import axios from 'axios';
 import {
   DocumentClient,
   QueryInput,
@@ -52,7 +53,7 @@ const withAuth = (req: RequestWithItem, res: Response, next: NextFunction): Resp
 
   if (!authorization) return res.status(401).send({ message: 'Unauthorized access', status: 401 });
   if (!AWS_COGNITO_ID_POOL)
-    return res.status(401).send({ message: "Invalid access, 'ID_POOL' is missing", status: 401 });
+    return res.status(500).send({ message: "Invalid access, 'AWS_COGNITO_ID_POOL' is missing", status: 401 });
 
   const decoded: JwtDecodeWithName = jwtDecode(authorization);
   const identityCredentialsResponse = new AWS.CognitoIdentityCredentials({
@@ -91,16 +92,11 @@ const withAuth = (req: RequestWithItem, res: Response, next: NextFunction): Resp
  */
 router.post('/api/tokensignin', (req: RequestWithBody, res: Response) => {
   const { idToken } = req.body;
-
-  if (!idToken) return res.status(400).send({ message: "'id_token' is required", status: 400 });
+  if (!idToken) return res.status(400).send({ message: "'idToken' is required", status: 400 });
 
   const tokenInfoEndpoint = `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${idToken}`;
-  const options = {
-    url: tokenInfoEndpoint,
-    method: 'GET',
-  };
 
-  return request(options, ({ error, response, body }: RequestResponse): any => {
+  request.get(tokenInfoEndpoint, (error, response, body) => {
     if (error) return res.status(error ?? 500).send({ message: 'Internal server error. Request error.', status: 500 });
     if (response && response.statusCode)
       return res.status(response.statusCode).send({ message: response.statusMessage, status: response.statusCode });
@@ -139,7 +135,7 @@ router.post('/api/note', withAuth, (req: RequestWithItem, res: Response): Respon
   );
 });
 
-router.patch('/api/note', withAuth, (req: RequestWithItem, res: Response, next: NextFunction): Response | undefined => {
+router.patch('/api/note', withAuth, (req: RequestWithItem, res: Response): Response | undefined => {
   const {
     docClient,
     body: { Item },
@@ -167,7 +163,7 @@ router.patch('/api/note', withAuth, (req: RequestWithItem, res: Response, next: 
         return res
           .status(err.statusCode || 500)
           .send({ message: err.message || 'Internal server error', status: err.statusCode || 500 });
-      return res.status(200).send(Item);
+      return res.status(200).send(data);
     },
   );
 });
@@ -259,3 +255,5 @@ router.delete('/api/note/:timestamp', (req: RequestWithItem, res: Response): Res
     return res.status(200).send({ message: data, status: 200 });
   });
 });
+
+export { router };

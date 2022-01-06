@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.router = void 0;
 const express_1 = require("express");
 const request_1 = __importDefault(require("request"));
 const jwt_decode_1 = __importDefault(require("jwt-decode"));
@@ -13,6 +14,7 @@ const aws_sdk_1 = __importDefault(require("aws-sdk"));
 const dynamodb_1 = require("aws-sdk/clients/dynamodb");
 aws_sdk_1.default.config.update({ region: 'us-east-1' });
 const router = (0, express_1.Router)();
+exports.router = router;
 const TableName = 'td_notes';
 let userId = '';
 let userName = '';
@@ -29,7 +31,7 @@ const withAuth = (req, res, next) => {
     if (!authorization)
         return res.status(401).send({ message: 'Unauthorized access', status: 401 });
     if (!AWS_COGNITO_ID_POOL)
-        return res.status(401).send({ message: "Invalid access, 'ID_POOL' is missing", status: 401 });
+        return res.status(500).send({ message: "Invalid access, 'AWS_COGNITO_ID_POOL' is missing", status: 401 });
     const decoded = (0, jwt_decode_1.default)(authorization);
     const identityCredentialsResponse = new aws_sdk_1.default.CognitoIdentityCredentials({
         // Identity Pool ID
@@ -67,13 +69,9 @@ const withAuth = (req, res, next) => {
 router.post('/api/tokensignin', (req, res) => {
     const { idToken } = req.body;
     if (!idToken)
-        return res.status(400).send({ message: "'id_token' is required", status: 400 });
+        return res.status(400).send({ message: "'idToken' is required", status: 400 });
     const tokenInfoEndpoint = `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${idToken}`;
-    const options = {
-        url: tokenInfoEndpoint,
-        method: 'GET',
-    };
-    return (0, request_1.default)(options, ({ error, response, body }) => {
+    request_1.default.get(tokenInfoEndpoint, (error, response, body) => {
         if (error)
             return res.status(error !== null && error !== void 0 ? error : 500).send({ message: 'Internal server error. Request error.', status: 500 });
         if (response && response.statusCode)
@@ -104,7 +102,7 @@ router.post('/api/note', withAuth, (req, res) => {
         return res.status(200).send(data);
     });
 });
-router.patch('/api/note', withAuth, (req, res, next) => {
+router.patch('/api/note', withAuth, (req, res) => {
     const { docClient, body: { Item }, } = req;
     if (!Item)
         return res.status(400).send({ message: "'Item' is required", status: 400 });
@@ -126,7 +124,7 @@ router.patch('/api/note', withAuth, (req, res, next) => {
             return res
                 .status(err.statusCode || 500)
                 .send({ message: err.message || 'Internal server error', status: err.statusCode || 500 });
-        return res.status(200).send(Item);
+        return res.status(200).send(data);
     });
 });
 router.get('/api/notes', withAuth, (req, res) => {
