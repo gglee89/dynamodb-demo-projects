@@ -1,5 +1,5 @@
-import express from 'express';
-import { router } from './routes/app-routes';
+import express, { Request, Response } from 'express';
+// import { router } from './routes/app-routes';
 import cookieSession from 'cookie-session';
 import dotenv from 'dotenv';
 import cors, { CorsRequest } from 'cors';
@@ -17,7 +17,10 @@ app.use(
     return callback(null, corsOptions);
   }),
 );
-app.use(router);
+// app.use(router);
+app.get('/', (req: Request, res: Response) => {
+  return res.send('Hello World');
+});
 
 app.listen(5001, () => {
   console.log('listening on port 5001');
