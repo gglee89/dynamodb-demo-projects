@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const app_routes_1 = require("./routes/app-routes");
+// import { router } from './routes/app-routes';
 const cookie_session_1 = __importDefault(require("cookie-session"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
@@ -19,7 +19,10 @@ app.use((0, cors_1.default)((req, callback) => {
         corsOptions = { origin: true };
     return callback(null, corsOptions);
 }));
-app.use(app_routes_1.router);
+// app.use(router);
+app.get('/', (req, res) => {
+    return res.send('Hello World');
+});
 app.listen(5001, () => {
     console.log('listening on port 5001');
 });
