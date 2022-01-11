@@ -5,7 +5,6 @@ import { v4 } from 'uuid';
 import _ from 'underscore';
 import moment from 'moment';
 import AWS, { AWSError } from 'aws-sdk';
-import axios from 'axios';
 import {
   DocumentClient,
   QueryInput,
